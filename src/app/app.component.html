@@ -1,0 +1,14 @@
+<mat-sidenav-container class="example-container" fullscreen>
+    <mat-sidenav #sidenav mode="side" [(opened)]="opened" (opened)="events.push('open!')" (closed)="events.push('close!')">
+        <a mat-button>Welcome to CMS</a>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+        <main>
+            <div class="hamburger"><button mat-button class="menu-button" (click)="sidenav.toggle()">
+            <mat-icon>{{ opened ? 'menu_open' : 'menu' }}</mat-icon>
+          </button></div>
+            <router-outlet></router-outlet>
+        </main>
+    </mat-sidenav-content>
+</mat-sidenav-container>

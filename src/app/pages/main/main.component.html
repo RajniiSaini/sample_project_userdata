@@ -1,0 +1,105 @@
+<form [formGroup]="searchUserForm">
+    <app-input formControlName="search" [control]="searchUserForm.controls['search']" [label]="'Search'" #input></app-input>
+    <app-button [label]="'Create'" (click)="createUser()"></app-button>
+</form>
+
+<main>
+    <table mat-table [dataSource]="person" class="mat-elevation-z8" matSort>
+        <ng-container matColumnDef="sn">
+            <th mat-header-cell *matHeaderCellDef> Sr No. </th>
+            <td mat-cell *matCellDef="let element; let i = index;"> {{i+1}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Id. </th>
+            <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="gender">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Gender </th>
+            <td mat-cell *matCellDef="let element"> {{element.gender}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef> email </th>
+            <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+            <td mat-cell *matCellDef="let element">
+                <button *ngIf="element.status === 'active'" mat-raised-button color="success">{{element.status}}</button>
+                <button *ngIf="element.status === 'inactive'" mat-raised-button color="warn">{{element.status}}</button>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let element">
+                <mat-icon (click)="updateUser(element.id, element)">edit</mat-icon>
+                <mat-icon (click)="deleteUser(element.id, element.name)">delete</mat-icon>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+        </tr>
+    </table>
+</main>
+<ng-template #createModal>
+    <form [formGroup]="createUserForm" class="create-form">
+        <h3>Create User</h3>
+        <div class="form-row">
+            <div class="col">
+                <app-input formControlName="name" [control]="createUserForm.controls['name']" [label]="'Name'"></app-input>
+                <div *ngIf="createUserForm.controls.name.dirty && createUserForm.controls.name.invalid" class="error">
+                    <span *ngIf="createUserForm.controls.name.errors.required" class="error-msg">This field cannot be blank</span>
+                </div>
+            </div>
+            <div class="col">
+                <app-select formControlName="gender" [control]="createUserForm.controls['gender']" [label]="'Gender'" [items]="genders"></app-select>
+                <div *ngIf="createUserForm.controls.gender.dirty && createUserForm.controls.gender.invalid" class="error">
+                    <span *ngIf="createUserForm.controls.gender.errors.required" class="error-msg">This field cannot be blank</span>
+                </div>
+            </div>
+            <div class="col">
+                <app-input formControlName="email" [control]="createUserForm.controls['email']" [label]="'Email'"></app-input>
+                <div *ngIf="createUserForm.controls.email.dirty && createUserForm.controls.email.invalid" class="error">
+                    <span *ngIf="createUserForm.controls.email.errors.required" class="error-msg">This field cannot be blank</span>
+                    <span *ngIf="createUserForm.controls.email.errors.pattern" class="error-msg">Please enter a valid Email ID</span>
+                </div>
+            </div>
+            <div class="col">
+                <app-select formControlName="status" [control]="createUserForm.controls['status']" [label]="'Status'" [items]="statuses"></app-select>
+                <div *ngIf="createUserForm.controls.status.dirty && createUserForm.controls.status.invalid" class="error">
+                    <span *ngIf="createUserForm.controls.status.errors.required" class="error-msg">This field cannot be blank</span>
+                </div>
+            </div>
+        </div>
+        <div class="button-container">
+            <app-button [mat-dialog-close]="true" [label]="'Create'" [disabled]="!createUserForm.valid"></app-button>
+            <app-button [mat-dialog-close]="false" [label]="'Cancel'"></app-button>
+        </div>
+    </form>
+</ng-template>
+
+<ng-template #updateModal>
+    <form [formGroup]="updateUserForm" class="create-form">
+        <h3>Update User</h3>
+        <app-input formControlName="name" [control]="updateUserForm.controls['name']" [label]="'Name'"></app-input>
+        <app-select formControlName="gender" [control]="updateUserForm.controls['gender']" [label]="'Gender'" [disable]="true" [items]="genders"></app-select>
+        <app-input formControlName="email" [control]="updateUserForm.controls['email']" [label]="'Email'"></app-input>
+        <app-select formControlName="status" [control]="updateUserForm.controls['status']" [label]="'Status'" [items]="statuses"></app-select>
+        <div class="button-container">
+            <app-button [mat-dialog-close]="true" [label]="'Update'"></app-button>
+            <app-button [mat-dialog-close]="false" [label]="'Cancel'"></app-button>
+        </div>
+    </form>
+</ng-template>
